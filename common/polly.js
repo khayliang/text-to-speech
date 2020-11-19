@@ -9,7 +9,7 @@ const Polly = {
       SampleRate: "8000", 
       Text: text, 
       TextType: "text", 
-      VoiceId: "Joanna"
+      VoiceId: process.env.voiceId
     }
     try{
       const data = await polly.synthesizeSpeech(params).promise();

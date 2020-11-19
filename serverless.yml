@@ -3,6 +3,11 @@ service: text-to-speech
 frameworkVersion: '2'
 
 provider:
+  environment:
+    tableName: ${self:custom.tableName}
+    bucketName: ${self:custom.bucketName}
+    voiceId: Joanna
+
   name: aws
   runtime: nodejs12.x
   profile: serverlessUser
@@ -20,17 +25,11 @@ provider:
     - Effect: "Allow"
       Action: 
         - 'dynamodb:PutItem'
+        - 'dynamodb:GetItem'
       Resource: "*"
-
-            
-  environment:
-    tableName: ${self:custom.tableName}
-    bucketName: ${self:custom.bucketName}
-        
 
 plugins:
   - serverless-webpack
-
 
 package:
     individually: true
@@ -40,12 +39,17 @@ custom:
   bucketName: text-to-speech-bucket-87432
 
 functions:
-  hello:
-    handler: handler.hello
   create-speech:
     handler: lambdas/create-speech.handler
     events:
       - sns: create_speech
+  get-speech:
+    handler: lambdas/get-speech.handler
+    events:
+      - http:
+          path: get_speech
+          method: GET
+          cors: true
 
 resources:
   Resources:
