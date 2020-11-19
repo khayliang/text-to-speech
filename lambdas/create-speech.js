@@ -1,5 +1,6 @@
 const Polly = require("../common/polly")
 const S3 = require("../common/s3")
+const Dynamo = require("../common/dynamo.js")
 
 exports.handler = async ({Records}, ctx) => {
   const { Sns } = Records[0]
@@ -9,8 +10,9 @@ exports.handler = async ({Records}, ctx) => {
     speech_data = await Polly.create_speech(text)
     const audio = speech_data.AudioStream
     //push to s3
-    console.log(speech_data.ContentType)
-    resp = await S3.uploadAudio(audio, speech_data.ContentType, text, process.env.bucketName)
+    await S3.uploadAudio(audio, speech_data.ContentType, text, process.env.bucketName)
+    resp = await Dynamo.putSpeechEntry(text)
+    
   }
   catch(error){
     console.log(error)
