@@ -8,9 +8,23 @@ provider:
   profile: serverlessUser
   stage: dev
   region: us-east-1
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action: 
+        - polly:SynthesizeSpeech
+      Resource: "*"
+    - Effect: "Allow"
+      Action: 
+        - 's3:PutObject'
+      Resource: "*"
+
+            
+  environment:
+    tableName: ${self:custom.tableName}
+    bucketName: ${self:custom.bucketName}
+        
 
 plugins:
-  - serverless-s3-sync
   - serverless-webpack
 
 
@@ -19,9 +33,8 @@ package:
 
 custom:
   tableName: text-to-speech-db
-  s3Sync:
-    - bucketName: text-to-speech-bucket-87432
-      localDir: s3-default
+  bucketName: text-to-speech-bucket-87432
+
         
     
 # you can add statements to the Lambda function's IAM Role here
@@ -56,13 +69,17 @@ custom:
 functions:
   hello:
     handler: handler.hello
+  create-speech:
+    handler: lambdas/create-speech.handler
+    events:
+      - sns: create_speech
 
 resources:
   Resources:
     SpeechBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: text-to-speech-bucket-87432
+        BucketName: ${self:custom.bucketName}
     TextToSpeechTable:
       Type: AWS::DynamoDB::Table
       Properties:
