@@ -7,6 +7,7 @@ provider:
     tableName: ${self:custom.tableName}
     bucketName: ${self:custom.bucketName}
     voiceId: Joanna
+    snsTopicArn: arn:aws:sns:us-east-1:791415850326:create_speech
 
   name: aws
   runtime: nodejs12.x
@@ -26,6 +27,10 @@ provider:
       Action: 
         - 'dynamodb:PutItem'
         - 'dynamodb:GetItem'
+      Resource: "*"
+    - Effect: "Allow"
+      Action: 
+        - 'SNS:Publish'
       Resource: "*"
 
 plugins:
@@ -49,6 +54,13 @@ functions:
       - http:
           path: get_speech
           method: GET
+          cors: true
+  create-speech-api:
+    handler: lambdas/create-speech-api.handler
+    events:
+      - http:
+          path: create_speech
+          method: POST
           cors: true
 
 resources:

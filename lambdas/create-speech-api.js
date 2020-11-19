@@ -1,16 +1,17 @@
-const Dynamo = require("../common/dynamo.js")
 const Responses = require("../common/api-responses")
+const Sns = require("../common/sns")
+
 exports.handler = async (event, ctx) => {
-  if (!event.queryStringParameters.text) {
+  if (!event.body.text) {
     return Responses._400({ 
       message: 'missing speech text' 
     });
   }  
-  const text = event.queryStringParameters.text;
+  const text = event.body.text;
   try{
-      speech_info = await Dynamo.getSpeech(text)
+      speech_info = await Sns.sendSpeechTopic(text)
       return Responses._200({
-        url: speech_info.http_url
+        message: "success"
       })
     }
     catch(err){

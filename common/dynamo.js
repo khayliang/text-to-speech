@@ -43,7 +43,7 @@ const Dynamo = {
       }
     }
     const res = await documentClient.get(params).promise()
-    if(!res){
+    if(!res.Item){
       return false
     }
     return true
