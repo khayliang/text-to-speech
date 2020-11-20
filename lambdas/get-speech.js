@@ -1,4 +1,5 @@
 const Dynamo = require("../common/dynamo.js")
+const S3 = require("../common/s3")
 const Responses = require("../common/api-responses")
 exports.handler = async (event, ctx) => {
   if (!event.queryStringParameters.text) {
@@ -8,9 +9,10 @@ exports.handler = async (event, ctx) => {
   }  
   const text = event.queryStringParameters.text;
   try{
-      speech_info = await Dynamo.getSpeech(text)
+      const speech_info = await Dynamo.getSpeech(text)
+      const url = await S3.getSpeechUrl(text)
       return Responses._200({
-        url: speech_info.http_url
+        url: url
       })
     }
     catch(err){

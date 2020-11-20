@@ -12,7 +12,7 @@ exports.handler = async ({Records}, ctx) => {
       speech_data = await Polly.create_speech(text)
       const audio = speech_data.AudioStream
       //push to s3
-      await S3.uploadAudio(audio, speech_data.ContentType, text, process.env.bucketName)
+      await S3.uploadAudio(audio, speech_data.ContentType, text)
       resp = await Dynamo.putSpeechEntry(text)
     }
     else{
