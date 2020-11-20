@@ -17,10 +17,10 @@ const S3 = {
     }
 
   },
-  async getSpeechUrl(text){
+  async getSpeechUrl(key){
     const params = {
       Bucket: process.env.bucketName,
-      Key: text
+      Key: key
     }
     const url = await s3.getSignedUrlPromise('getObject', params);
     return url

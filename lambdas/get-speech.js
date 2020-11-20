@@ -10,7 +10,7 @@ exports.handler = async (event, ctx) => {
   const text = event.queryStringParameters.text;
   try{
       const speech_info = await Dynamo.getSpeech(text)
-      const url = await S3.getSpeechUrl(text)
+      const url = await S3.getSpeechUrl(speech_info.key)
       return Responses._200({
         url: url
       })

@@ -2,14 +2,12 @@ const AWS = require('aws-sdk')
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
 const Dynamo = {
-  async putSpeechEntry(text){
-    let s3_uri = `s3://${process.env.bucketName}/${text}`
+  async putSpeechEntry(text, key){
     const params = {
         TableName: process.env.tableName,
         Item: {
           id: text,
-          text,
-          s3_uri
+          key
         }
     };
 
